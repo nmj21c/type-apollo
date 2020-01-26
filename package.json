@@ -1,0 +1,27 @@
+{
+  "name": "apollo-type",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nmj21c/type-apollo"
+  },
+  "scripts": {
+    "start": "npm run watch",
+    "build": "rm -rf dist && tsc -d",
+    "tsc-start": "tsc-watch --onSuccess \" node dist/index.js\"",
+    "watch": "concurrently -k -p \"[{name}]\" -n \"Typescript, Node\" -c \"cyan.bold,yellow.bold\" \"npm run watch-ts\" \"npm run watch-node\"",
+    "watch-node": "nodemon dist/index.js",
+    "watch-ts": "tsc -w"
+  },
+  "dependencies": {
+    "apollo-server": "^2.9.16",
+    "graphql": "^14.5.8",
+    "merge-graphql-schemas": "^1.7.6"
+  },
+  "devDependencies": {
+    "concurrently": "^5.0.2",
+    "nodemon": "^2.0.2"
+  }
+}
