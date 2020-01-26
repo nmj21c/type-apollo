@@ -1,9 +1,13 @@
 import { ApolloServer, gql } from "apollo-server";
 import * as path from "path";
-import { fileLoader, mergeResolvers, mergeTypes } from "merge-graphql-schemas";
+import { mergeResolvers, mergeTypes } from "merge-graphql-schemas";
 
-const allTypes = fileLoader(path.join(__dirname, "./graphql/schemas/**/*.js"));
-const allResolvers = fileLoader(path.join(__dirname, "./graphql/resolvers/**/*.js"));
+import schemaTest from "./graphql/schemas/schema_test";
+
+import resoverTest from "./graphql/resolvers/resolver_test";
+
+const allTypes = [schemaTest];
+const allResolvers = [resoverTest];
 
 const server = new ApolloServer({
     typeDefs: mergeTypes(allTypes), 
