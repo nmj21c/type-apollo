@@ -1,10 +1,18 @@
 import gql from "graphql-tag";
 
 const typeDefs = gql`
-    type Query {
-        sayHello(name: String): String,
-        name: String,
-    }
+  type User {
+    username: String!
+    email: String!
+  }
+
+  type Query {
+    sayHello(name: String): String
+    name: String
+    authenticate(username: String, password: String): String
+    me: User
+    users: [User]
+  }
 `;
 
 export default typeDefs;

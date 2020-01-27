@@ -1,19 +1,59 @@
-import { ApolloServer, gql } from "apollo-server";
-import * as path from "path";
+import {
+  ApolloServer,
+  AuthenticationError,
+  ForbiddenError
+} from "apollo-server";
 import { mergeResolvers, mergeTypes } from "merge-graphql-schemas";
 
+// schemas import
 import schemaTest from "./graphql/schemas/schema_test";
 
-import resoverTest from "./graphql/resolvers/resolver_test";
+// resolvers import
+import resolverTest from "./graphql/resolvers/resolver_test";
 
-const allTypes = [schemaTest];
-const allResolvers = [resoverTest];
+// Datasources import
+import TestDatasource from "./datasources/datasource_test";
 
-const server = new ApolloServer({
-    typeDefs: mergeTypes(allTypes), 
-    resolvers: mergeResolvers(allResolvers)
+/**
+ * types append
+ */
+const typeDefs = mergeTypes([schemaTest], { all: true });
+
+/**
+ * resolvers append
+ */
+const resolvers = mergeResolvers([resolverTest], {all: true});
+
+/**
+ * datasources
+ */
+const dataSources = () => ({
+  test: new TestDatasource()
 });
 
-server.listen().then(({url}) => {
-    console.log(`🚀  Server ready at ${url}`);
-})
+/**
+ * context
+ * @param {*} param0
+ */
+const context = async ({ req }) => {
+  // console.log(`request path : ${req.path}`);
+
+  if (!req.headers || !req.headers.authorization)
+    return undefined;
+
+  const token = req.headers.authorization.substr(7);
+  const user = dataSources().test.getUser(token);
+
+  return { user };
+};
+
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  dataSources,
+  context
+});
+
+server.listen().then(({ url }) => {
+  console.log(`🚀  Server ready at ${url}`);
+});
